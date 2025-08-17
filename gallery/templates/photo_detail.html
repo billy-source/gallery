@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ photo.title }}{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center p-4">
+    <div class="bg-gray-800 rounded-xl shadow-2xl p-6 max-w-2xl w-full">
+        <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="w-full h-auto rounded-xl mb-4">
+        <h2 class="text-white text-3xl font-bold mb-2">{{ photo.title }}</h2>
+        <p class="text-gray-300 text-lg mb-4">{{ photo.description }}</p>
+        <div class="flex flex-wrap gap-2">
+            {% for tag in photo.tags.split(',') %}
+                <span class="bg-blue-600 text-white text-sm px-3 py-1 rounded-full">{{ tag|striptags }}</span>
+            {% endfor %}
+        </div>
+        <div class="mt-4">
+            <span class="text-sm text-gray-400">{{ photo.likes.count }} Likes</span>
+        </div>
+    </div>
+</div>
+{% endblock %}
