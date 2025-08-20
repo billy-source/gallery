@@ -1,33 +1,46 @@
-{% extends "base.html" %}
-
-{% block title %}Photo Gallery{% endblock %}
-
+{% extends 'base.html' %}
 {% block content %}
-<div class="container mx-auto py-8">
-    <h1 class="text-4xl font-bold text-center text-white mb-6">Photo Gallery</h1>
+<div class="container mt-4">
+    <h2 class="mb-4">Photo Gallery</h2>
 
-    <!-- Add Photo Button -->
-    <div class="text-center mb-6">
-        <a href="{% url 'add_photo' %}" 
-           class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
-            + Add New Photo
-        </a>
-    </div>
-
-    <!-- Gallery Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div class="row">
         {% for photo in photos %}
-        <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
-            <img src="{{ photo.image.url }}" 
-                 alt="{{ photo.title }}" 
-                 class="w-full h-48 object-cover rounded-lg mb-3">
-            <h2 class="text-lg font-semibold text-white">{{ photo.title }}</h2>
-            <p class="text-sm text-gray-400">Uploaded by: {{ photo.uploaded_by.username }}</p>
-            <p class="text-xs text-gray-500">Tags: {{ photo.tags }}</p>
-            <p class="text-xs text-gray-500">Uploaded on {{ photo.uploaded_at|date:"M d, Y H:i" }}</p>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <!-- Photo Image -->
+                <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.title }}">
+
+                <div class="card-body">
+                    <!-- Title -->
+                    <h5 class="card-title">{{ photo.title }}</h5>
+                    
+                    <!-- Description -->
+                    <p class="card-text">{{ photo.description|default:"No description" }}</p>
+                    
+                    <!-- Tags -->
+                    {% if photo.tags %}
+                        <p class="text-muted"><strong>Tags:</strong> {{ photo.tags }}</p>
+                    {% endif %}
+
+                    <!-- Uploaded Info -->
+                    <p class="text-muted small">
+                        <strong>Uploaded by:</strong> 
+                        {{ photo.uploaded_by.username|default:"Unknown" }} <br>
+                        <strong>Date:</strong> {{ photo.uploaded_at|date:"M d, Y H:i" }}
+                    </p>
+
+                    <!-- Like Button -->
+                    <form method="post" action="{% url 'like_photo' photo.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                            👍 Like ({{ photo.likes.count }})
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
         {% empty %}
-        <p class="text-gray-400 text-center col-span-full">No photos uploaded yet.</p>
+        <p>No photos uploaded yet.</p>1
         {% endfor %}
     </div>
 </div>
