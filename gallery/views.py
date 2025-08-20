@@ -7,7 +7,8 @@ from django.db.models import Count
 from django.contrib import messages
 from django.http import JsonResponse
 import json
-
+from .models import Photo
+from .forms import PhotoForm
 
 def gallery(request):
     all_photos = Photo.objects.all()
@@ -91,3 +92,20 @@ def like_photo(request, photo_id):
         return JsonResponse({'is_liked': is_liked, 'likes_count': photo.likes.count()})
     return redirect('gallery')
 
+def gallery_view(request):
+    photos = Photo.objects.all().order_by("-uploaded_at") 
+    return render(request, "gallery.html", {"photos": photos})
+
+
+@login_required
+def add_photo(request):
+    if request.method == "POST":
+        form = PhotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            photo = form.save(commit=False)
+            photo.uploaded_by = request.user  # set uploader
+            photo.save()
+            return redirect("gallery")  # go back to gallery
+    else:
+        form = PhotoForm()
+    return render(request, "add_photo.html", {"form": form})

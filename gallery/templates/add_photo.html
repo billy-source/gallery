@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Add Photo{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen bg-gray-900">
+    <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md text-white">
+        <h1 class="text-3xl font-bold text-center mb-6">Upload New Photo</h1>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            
+            <!-- Render form fields -->
+            {% for field in form %}
+                <div class="space-y-1">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-red-400 text-sm">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <!-- Submit button -->
+            <button type="submit" 
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors duration-200">
+                Upload Photo
+            </button>
+        </form>
+
+        <!-- Back to gallery -->
+        <div class="text-center mt-4">
+            <a href="{% url 'gallery' %}" class="text-blue-400 hover:underline">← Back to Gallery</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
